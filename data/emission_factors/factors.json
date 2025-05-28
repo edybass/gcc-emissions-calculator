@@ -39,6 +39,14 @@
       "heating_value": 0.0404,
       "unit": "GJ/L",
       "source": "IPCC 2006"
+    },
+    "coal": {
+      "co2": 94.6,
+      "ch4": 0.001,
+      "n2o": 0.0015,
+      "heating_value": 0.0246,
+      "unit": "GJ/kg",
+      "source": "IPCC 2006"
     }
   },
   "electricity": {
