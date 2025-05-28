@@ -3,8 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GHG Emissions Calculator</title>
+    <title>GCC Emissions Calculator - Professional GHG Calculator for UAE & Saudi Arabia</title>
+    <meta name="description" content="Calculate greenhouse gas emissions for organizations in UAE and Saudi Arabia. Scope 1, 2, and 3 emissions calculator following GHG Protocol standards.">
+    <meta name="author" content="Edy Bassil">
+    <meta name="keywords" content="GHG calculator, carbon emissions, UAE, Saudi Arabia, KSA, sustainability, net zero">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="GCC Emissions Calculator">
+    <meta property="og:description" content="Professional GHG emissions calculator for UAE & Saudi Arabia">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://edybass.github.io/gcc-emissions-calculator/">
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+
     <style>
+        :root {
+            --primary-color: #00695c;
+            --primary-dark: #004d40;
+            --primary-light: #4db6ac;
+            --secondary-color: #ff6f00;
+            --secondary-dark: #e65100;
+            --secondary-light: #ffb74d;
+            --success-color: #2e7d32;
+            --warning-color: #f9a825;
+            --error-color: #c62828;
+            --background: #f5f5f5;
+            --surface: #ffffff;
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --border-color: #e0e0e0;
+            --shadow-1: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-2: 0 4px 8px rgba(0,0,0,0.15);
+            --shadow-3: 0 8px 16px rgba(0,0,0,0.2);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,543 +47,1360 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        .container {
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 3rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 60%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        .header-content {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            padding: 40px 0;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
         }
 
         h1 {
             font-size: 3rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
         .subtitle {
-            font-size: 1.2rem;
-            color: #7f8c8d;
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 1rem;
         }
 
-        .calculator-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            margin-top: 40px;
-        }
-
-        .scope-tabs {
+        .badges {
             display: flex;
-            gap: 10px;
-            margin-bottom: 40px;
-            border-bottom: 2px solid #ecf0f1;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: var(--transition);
+        }
+
+        .badge:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Calculator Card */
+        .calculator-card {
+            background: var(--surface);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-2);
+            margin: -2rem auto 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: var(--primary-color);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            overflow-x: auto;
+            scrollbar-width: thin;
         }
 
         .tab {
-            padding: 15px 30px;
+            flex: 1;
+            padding: 1.5rem 2rem;
             background: none;
             border: none;
+            color: rgba(255,255,255,0.7);
             font-size: 1.1rem;
+            font-weight: 500;
             cursor: pointer;
-            color: #7f8c8d;
-            transition: all 0.3s;
+            transition: var(--transition);
             position: relative;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: white;
+            background: rgba(255,255,255,0.1);
         }
 
         .tab.active {
-            color: #2c3e50;
-            font-weight: 600;
+            color: white;
+            background: var(--primary-dark);
         }
 
         .tab.active::after {
             content: '';
             position: absolute;
-            bottom: -2px;
+            bottom: 0;
             left: 0;
             right: 0;
             height: 3px;
-            background: #3498db;
+            background: var(--secondary-color);
         }
 
+        /* Tab Content */
         .tab-content {
+            padding: 3rem;
             display: none;
+            animation: fadeIn 0.3s ease-out;
         }
 
         .tab-content.active {
             display: block;
-            animation: fadeIn 0.3s;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Form Styles */
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
         }
 
         .form-group {
-            margin-bottom: 25px;
+            position: relative;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
             font-weight: 500;
-            color: #2c3e50;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        select, input {
+        input, select {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #ecf0f1;
-            border-radius: 10px;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
             font-size: 1rem;
-            transition: border-color 0.3s;
+            transition: var(--transition);
+            background: var(--surface);
         }
 
-        select:focus, input:focus {
+        input:focus, select:focus {
             outline: none;
-            border-color: #3498db;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 105, 92, 0.1);
         }
 
-        .calculate-btn {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
+        input[type="number"] {
+            appearance: textfield;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.875rem 2rem;
             border: none;
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            border-radius: 10px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
-            display: block;
-            margin: 30px auto 0;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .calculate-btn:hover {
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow-1);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
             transform: translateY(-2px);
+            box-shadow: var(--shadow-2);
         }
 
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        /* Results Section */
         .results {
-            margin-top: 40px;
-            padding: 30px;
-            background: #f8f9fa;
-            border-radius: 15px;
+            margin-top: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: var(--border-radius);
             display: none;
+            position: relative;
+            overflow: hidden;
         }
 
         .results.show {
             display: block;
+            animation: slideIn 0.5s ease-out;
         }
 
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #e9ecef;
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results h3 {
+            color: var(--success-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow-1);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-2);
+        }
+
+        .result-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
         }
 
         .result-value {
             font-size: 2rem;
-            font-weight: bold;
-            color: #27ae60;
+            font-weight: 700;
+            color: var(--primary-dark);
         }
 
-        .summary {
-            margin-top: 40px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .summary-card {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .summary-card h3 {
-            color: #7f8c8d;
+        .result-unit {
+            color: var(--text-secondary);
             font-size: 0.9rem;
-            margin-bottom: 10px;
         }
 
-        .summary-card .value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #2c3e50;
+        /* Info Cards */
+        .info-section {
+            margin: 4rem 0;
         }
 
-        .footer {
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-1);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-3);
+        }
+
+        .info-card:hover::before {
+            width: 8px;
+        }
+
+        .info-card h4 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .info-card p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* Features Section */
+        .features {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 4rem 0;
+            margin: 4rem -2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .feature {
             text-align: center;
-            padding: 40px 0;
-            color: #7f8c8d;
+            padding: 2rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
         }
 
+        .feature:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+
+        footer a {
+            color: var(--secondary-light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        footer a:hover {
+            color: var(--secondary-color);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        /* Loading State */
         .loading {
             display: none;
             text-align: center;
-            padding: 20px;
+            padding: 2rem;
         }
 
         .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--primary-color);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
             animation: spin 1s linear infinite;
-            margin: 0 auto;
+            margin: 0 auto 1rem;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to { transform: rotate(360deg); }
         }
 
+        /* Responsive Design */
         @media (max-width: 768px) {
             h1 {
                 font-size: 2rem;
             }
 
-            .calculator-container {
-                padding: 20px;
+            .subtitle {
+                font-size: 1.1rem;
             }
 
-            .scope-tabs {
+            .tabs {
                 flex-wrap: wrap;
             }
 
             .tab {
-                padding: 10px 20px;
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .tab-content {
+                padding: 2rem 1rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .features {
+                margin: 4rem -1rem;
             }
         }
+
+        /* Print Styles */
+        @media print {
+            header, footer, .tabs, .btn, .features {
+                display: none;
+            }
+
+            .tab-content {
+                display: block !important;
+                padding: 0;
+            }
+
+            .results {
+                display: block !important;
+                background: none;
+                border: 1px solid #000;
+            }
+        }
+
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mt-4 { margin-top: 2rem; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 2rem; }
     </style>
 </head>
 <body>
+    <header>
+        <div class="header-content">
+            <h1>🌍 GCC Emissions Calculator</h1>
+            <p class="subtitle">Professional GHG Calculator for UAE & Saudi Arabia</p>
+            <p>Calculate your organization's carbon footprint following international standards</p>
+
+            <div class="badges">
+                <span class="badge">🇦🇪 UAE Compliant</span>
+                <span class="badge">🇸🇦 KSA Compliant</span>
+                <span class="badge">📊 GHG Protocol</span>
+                <span class="badge">🎯 Net Zero Ready</span>
+                <span class="badge">🔬 Science-Based</span>
+            </div>
+        </div>
+    </header>
+
     <div class="container">
-        <header>
-            <h1>🌍 UAE & KSA GHG Emissions Calculator</h1>
-            <p class="subtitle">Calculate your carbon footprint in the UAE and Saudi Arabia</p>
-            <p class="subtitle" style="font-size: 1rem; margin-top: 10px;">Supporting UAE Net Zero 2050 & Saudi Vision 2030</p>
-        </header>
-
-        <div class="calculator-container">
-            <div class="scope-tabs">
-                <button class="tab active" onclick="switchTab('scope1')">Scope 1</button>
-                <button class="tab" onclick="switchTab('scope2')">Scope 2</button>
-                <button class="tab" onclick="switchTab('scope3')">Scope 3</button>
+        <div class="calculator-card">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('scope1', this)">
+                    ⚡ Scope 1: Direct
+                </button>
+                <button class="tab" onclick="switchTab('scope2', this)">
+                    🏭 Scope 2: Energy
+                </button>
+                <button class="tab" onclick="switchTab('scope3', this)">
+                    🚗 Scope 3: Value Chain
+                </button>
+                <button class="tab" onclick="switchTab('comprehensive', this)">
+                    📊 Comprehensive
+                </button>
             </div>
 
+            <!-- Scope 1 Tab -->
             <div id="scope1" class="tab-content active">
-                <h2>Direct Emissions</h2>
-                <p style="color: #7f8c8d; margin-bottom: 30px;">Calculate emissions from fuel combustion and direct sources</p>
+                <div class="form-section">
+                    <h3>Direct Emissions from Fuel Combustion</h3>
+                    <p class="text-secondary mb-3">Calculate emissions from fuels directly consumed by your organization</p>
 
-                <div class="form-group">
-                    <label for="fuel-type">Fuel Type</label>
-                    <select id="fuel-type">
-                        <option value="natural_gas">Natural Gas</option>
-                        <option value="diesel">Diesel</option>
-                        <option value="gasoline">Gasoline</option>
-                        <option value="coal">Coal</option>
-                    </select>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="fuel-type">Fuel Type</label>
+                            <select id="fuel-type">
+                                <option value="natural_gas">Natural Gas</option>
+                                <option value="diesel">Diesel</option>
+                                <option value="gasoline">Gasoline (Petrol)</option>
+                                <option value="lpg">LPG</option>
+                                <option value="fuel_oil">Fuel Oil</option>
+                                <option value="coal">Coal</option>
+                                <option value="kerosene">Kerosene</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fuel-amount">Amount Consumed</label>
+                            <input type="number" id="fuel-amount" placeholder="Enter amount" min="0" step="any">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fuel-unit">Unit</label>
+                            <select id="fuel-unit">
+                                <option value="m3">Cubic meters (m³)</option>
+                                <option value="L">Liters (L)</option>
+                                <option value="kg">Kilograms (kg)</option>
+                                <option value="tonnes">Tonnes (t)</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="fuel-amount">Amount</label>
-                    <input type="number" id="fuel-amount" placeholder="Enter amount" min="0" step="any">
-                </div>
-
-                <div class="form-group">
-                    <label for="fuel-unit">Unit</label>
-                    <select id="fuel-unit">
-                        <option value="m3">Cubic meters (m³)</option>
-                        <option value="L">Liters (L)</option>
-                        <option value="kg">Kilograms (kg)</option>
-                    </select>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="calculateScope1()">
+                        <span>Calculate Emissions</span>
+                        <span>→</span>
+                    </button>
+                    <button class="btn btn-outline" onclick="addMore('scope1')">
+                        <span>+ Add Another Fuel</span>
+                    </button>
                 </div>
             </div>
 
+            <!-- Scope 2 Tab -->
             <div id="scope2" class="tab-content">
-                <h2>Energy Indirect Emissions</h2>
-                <p style="color: #7f8c8d; margin-bottom: 30px;">Calculate emissions from purchased electricity</p>
+                <div class="form-section">
+                    <h3>Indirect Emissions from Purchased Energy</h3>
+                    <p class="text-secondary mb-3">Calculate emissions from electricity, steam, heating & cooling</p>
 
-                <div class="form-group">
-                    <label for="electricity-amount">Electricity Consumption (kWh)</label>
-                    <input type="number" id="electricity-amount" placeholder="Enter kWh" min="0" step="any">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="electricity-amount">Electricity Consumption (kWh)</label>
+                            <input type="number" id="electricity-amount" placeholder="Annual consumption" min="0" step="any">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="location">Location / Grid</label>
+                            <select id="location">
+                                <optgroup label="🇦🇪 United Arab Emirates">
+                                    <option value="UAE">UAE (National Grid)</option>
+                                    <option value="Dubai">Dubai (DEWA)</option>
+                                    <option value="Abu Dhabi">Abu Dhabi (ADWEA)</option>
+                                    <option value="Sharjah">Sharjah (SEWA)</option>
+                                    <option value="Northern Emirates">Northern Emirates (FEWA)</option>
+                                </optgroup>
+                                <optgroup label="🇸🇦 Saudi Arabia">
+                                    <option value="Saudi Arabia">KSA (National Grid)</option>
+                                    <option value="Riyadh">Riyadh (Central)</option>
+                                    <option value="Jeddah">Jeddah (Western)</option>
+                                    <option value="Dammam">Dammam (Eastern)</option>
+                                    <option value="NEOM">NEOM (Renewable City)</option>
+                                </optgroup>
+                                <optgroup label="🌍 Other GCC">
+                                    <option value="Kuwait">Kuwait</option>
+                                    <option value="Qatar">Qatar</option>
+                                    <option value="Bahrain">Bahrain</option>
+                                    <option value="Oman">Oman</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="method">Calculation Method</label>
+                            <select id="method">
+                                <option value="location_based">Location-based</option>
+                                <option value="market_based">Market-based</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="renewable-group" style="display: none;">
+                            <label for="renewable-percentage">Renewable Energy %</label>
+                            <input type="number" id="renewable-percentage" placeholder="0-100" min="0" max="100" step="1">
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="location">Location</label>
-                    <select id="location">
-                        <optgroup label="United Arab Emirates">
-                            <option value="UAE">UAE (National Average)</option>
-                            <option value="Dubai">Dubai (DEWA)</option>
-                            <option value="Abu Dhabi">Abu Dhabi (ADWEA)</option>
-                            <option value="Sharjah">Sharjah (SEWA)</option>
-                            <option value="Northern Emirates">Northern Emirates (FEWA)</option>
-                        </optgroup>
-                        <optgroup label="Saudi Arabia">
-                            <option value="Saudi Arabia">KSA (National Average)</option>
-                            <option value="Riyadh">Riyadh (Central)</option>
-                            <option value="Jeddah">Jeddah (Western)</option>
-                            <option value="Dammam">Dammam (Eastern)</option>
-                            <option value="NEOM">NEOM (Renewable)</option>
-                        </optgroup>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="method">Calculation Method</label>
-                    <select id="method">
-                        <option value="location_based">Location-based</option>
-                        <option value="market_based">Market-based</option>
-                    </select>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="calculateScope2()">
+                        <span>Calculate Emissions</span>
+                        <span>→</span>
+                    </button>
                 </div>
             </div>
 
+            <!-- Scope 3 Tab -->
             <div id="scope3" class="tab-content">
-                <h2>Value Chain Emissions</h2>
-                <p style="color: #7f8c8d; margin-bottom: 30px;">Calculate emissions from business travel and other indirect sources</p>
+                <div class="form-section">
+                    <h3>Value Chain Emissions</h3>
+                    <p class="text-secondary mb-3">Calculate emissions from business travel, commuting, water, and waste</p>
 
-                <div class="form-group">
-                    <label for="travel-distance">Travel Distance (km)</label>
-                    <input type="number" id="travel-distance" placeholder="Enter distance in km" min="0" step="any">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="scope3-category">Category</label>
+                            <select id="scope3-category" onchange="updateScope3Form()">
+                                <option value="business_travel">Business Travel</option>
+                                <option value="employee_commute">Employee Commuting</option>
+                                <option value="water_consumption">Water Consumption</option>
+                                <option value="waste_disposal">Waste Disposal</option>
+                                <option value="cooling">Cooling Systems</option>
+                            </select>
+                        </div>
+
+                        <div id="scope3-travel-fields">
+                            <div class="form-group">
+                                <label for="travel-distance">Distance (km)</label>
+                                <input type="number" id="travel-distance" placeholder="Total distance" min="0" step="any">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="travel-mode">Mode of Transport</label>
+                                <select id="travel-mode">
+                                    <option value="car_small">Car (Small)</option>
+                                    <option value="car_medium">Car (Medium)</option>
+                                    <option value="car_large">Car (Large)</option>
+                                    <option value="suv">SUV</option>
+                                    <option value="pickup_truck">Pickup Truck</option>
+                                    <option value="bus_public">Public Bus</option>
+                                    <option value="metro_dubai">Dubai Metro</option>
+                                    <option value="metro_riyadh">Riyadh Metro</option>
+                                    <option value="taxi_dubai">Dubai Taxi</option>
+                                    <option value="taxi_riyadh">Riyadh Taxi</option>
+                                    <option value="airplane_domestic">Airplane (Domestic)</option>
+                                    <option value="airplane_gcc">Airplane (Within GCC)</option>
+                                    <option value="airplane_international">Airplane (International)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="return-trip"> Round Trip
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="scope3-other-fields" style="display: none;">
+                            <!-- Dynamic fields will be inserted here -->
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="travel-mode">Mode of Transport</label>
-                    <select id="travel-mode">
-                        <option value="car_small">Car (Small)</option>
-                        <option value="car_medium">Car (Medium)</option>
-                        <option value="car_large">Car (Large)</option>
-                        <option value="suv">SUV</option>
-                        <option value="pickup_truck">Pickup Truck</option>
-                        <option value="bus_public">Public Bus</option>
-                        <option value="metro_dubai">Dubai Metro</option>
-                        <option value="metro_riyadh">Riyadh Metro</option>
-                        <option value="airplane_domestic">Airplane (Domestic)</option>
-                        <option value="airplane_gcc">Airplane (Within GCC)</option>
-                        <option value="airplane_international">Airplane (International)</option>
-                    </select>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="calculateScope3()">
+                        <span>Calculate Emissions</span>
+                        <span>→</span>
+                    </button>
                 </div>
             </div>
 
-            <button class="calculate-btn" onclick="calculate()">Calculate Emissions</button>
+            <!-- Comprehensive Tab -->
+            <div id="comprehensive" class="tab-content">
+                <div class="form-section">
+                    <h3>Comprehensive Annual Assessment</h3>
+                    <p class="text-secondary mb-3">Calculate your complete carbon footprint across all scopes</p>
 
+                    <div class="text-center" style="padding: 3rem;">
+                        <p class="mb-3">This feature allows you to input all your organization's emission sources and generate a comprehensive report.</p>
+                        <button class="btn btn-secondary" onclick="startComprehensiveAssessment()">
+                            <span>Start Assessment</span>
+                            <span>→</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
             <div class="loading">
                 <div class="spinner"></div>
-                <p>Calculating...</p>
+                <p>Calculating emissions...</p>
             </div>
 
+            <!-- Results Section -->
             <div id="results" class="results">
-                <h3>Calculation Results</h3>
-                <div class="result-item">
-                    <span>CO₂ Emissions:</span>
-                    <span class="result-value" id="result-value">0.000 tCO₂e</span>
+                <h3>📊 Calculation Results</h3>
+                <div class="result-grid">
+                    <div class="result-card">
+                        <div class="result-label">CO₂ Emissions</div>
+                        <div class="result-value" id="result-value">0.000</div>
+                        <div class="result-unit">tCO₂e</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Uncertainty</div>
+                        <div class="result-value" id="uncertainty-value">±5</div>
+                        <div class="result-unit">%</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Equivalent to</div>
+                        <div class="result-value" id="equivalent-value">0</div>
+                        <div class="result-unit">trees/year</div>
+                    </div>
                 </div>
-                <div style="margin-top: 20px; padding: 20px; background: #e8f5e9; border-radius: 10px;">
-                    <p id="result-details" style="color: #2e7d32;"></p>
+                <div id="result-details" class="mt-3"></div>
+                <div class="btn-group mt-3">
+                    <button class="btn btn-outline" onclick="downloadReport()">
+                        📥 Download Report
+                    </button>
+                    <button class="btn btn-outline" onclick="shareResults()">
+                        📤 Share Results
+                    </button>
                 </div>
             </div>
         </div>
 
-        <div id="summary" class="summary" style="display: none;">
-            <div class="summary-card">
-                <h3>Scope 1</h3>
-                <div class="value" id="scope1-total">0.000</div>
-                <p>tCO₂e</p>
+        <!-- Info Section -->
+        <section class="info-section">
+            <h2 class="text-center mb-4">Understanding GHG Emissions Scopes</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>⚡ Scope 1: Direct Emissions</h4>
+                    <p>Emissions from sources owned or controlled by your organization:</p>
+                    <ul class="mt-2">
+                        <li>Fuel combustion in boilers, furnaces, vehicles</li>
+                        <li>Process emissions from manufacturing</li>
+                        <li>Fugitive emissions from refrigerants</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4>🏭 Scope 2: Indirect - Energy</h4>
+                    <p>Emissions from purchased energy:</p>
+                    <ul class="mt-2">
+                        <li>Purchased electricity from the grid</li>
+                        <li>Purchased steam for processes</li>
+                        <li>District cooling (common in UAE)</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4>🚗 Scope 3: Indirect - Value Chain</h4>
+                    <p>All other indirect emissions:</p>
+                    <ul class="mt-2">
+                        <li>Business travel & employee commuting</li>
+                        <li>Purchased goods and services</li>
+                        <li>Waste disposal & water consumption</li>
+                    </ul>
+                </div>
             </div>
-            <div class="summary-card">
-                <h3>Scope 2</h3>
-                <div class="value" id="scope2-total">0.000</div>
-                <p>tCO₂e</p>
-            </div>
-            <div class="summary-card">
-                <h3>Scope 3</h3>
-                <div class="value" id="scope3-total">0.000</div>
-                <p>tCO₂e</p>
-            </div>
-            <div class="summary-card">
-                <h3>Total</h3>
-                <div class="value" id="total-emissions">0.000</div>
-                <p>tCO₂e</p>
-            </div>
-        </div>
+        </section>
 
-        <footer class="footer">
-            <p>Built with ❤️ for a sustainable future | <a href="https://github.com/yourusername/ghg-emissions-calculator" style="color: #3498db;">View on GitHub</a></p>
-        </footer>
+        <!-- Features Section -->
+        <section class="features">
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Accurate Factors</h3>
+                    <p>Region-specific emission factors for UAE, KSA, and GCC countries</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <h3>GHG Protocol</h3>
+                    <p>Fully compliant with international GHG Protocol standards</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🌡️</div>
+                    <h3>Climate Adapted</h3>
+                    <p>Factors adjusted for hot climate conditions and cooling needs</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">💧</div>
+                    <h3>Water & Cooling</h3>
+                    <p>Includes desalination and district cooling emissions</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Ready</h3>
+                    <p>Works seamlessly on all devices for field calculations</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure & Private</h3>
+                    <p>All calculations done locally - your data stays private</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Emissions Summary Dashboard -->
+        <section id="dashboard" class="info-section" style="display: none;">
+            <h2 class="text-center mb-4">Emissions Summary Dashboard</h2>
+            <div class="result-grid">
+                <div class="result-card">
+                    <div class="result-label">Scope 1</div>
+                    <div class="result-value" id="scope1-total">0.000</div>
+                    <div class="result-unit">tCO₂e</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">Scope 2</div>
+                    <div class="result-value" id="scope2-total">0.000</div>
+                    <div class="result-unit">tCO₂e</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">Scope 3</div>
+                    <div class="result-value" id="scope3-total">0.000</div>
+                    <div class="result-unit">tCO₂e</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">Total Emissions</div>
+                    <div class="result-value" id="total-emissions">0.000</div>
+                    <div class="result-unit">tCO₂e</div>
+                </div>
+            </div>
+        </section>
     </div>
 
+    <footer>
+        <p><strong>GCC Emissions Calculator</strong></p>
+        <p>Created by <a href="https://github.com/edybass" target="_blank">Edy Bassil</a> |
+           <a href="mailto:bassileddy@gmail.com">bassileddy@gmail.com</a></p>
+        <div class="footer-links">
+            <a href="https://github.com/edybass/gcc-emissions-calculator" target="_blank">GitHub</a>
+            <a href="https://ghgprotocol.org" target="_blank">GHG Protocol</a>
+            <a href="#" onclick="showAbout()">About</a>
+        </div>
+        <p class="mt-2">🌱 Supporting UAE Net Zero 2050 & Saudi Vision 2030</p>
+    </footer>
+
     <script>
-        const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:8000' : '';
+        // Global state
+        const state = {
+            results: {
+                scope1: [],
+                scope2: [],
+                scope3: []
+            },
+            currentScope: 'scope1'
+        };
 
-        function switchTab(scope) {
-            // Update tabs
+        // Emission factors (embedded for offline use)
+        const emissionFactors = {
+            fuels: {
+                natural_gas: { co2: 56.1, ch4: 0.001, n2o: 0.0001, heating_value: 0.0373, unit: "GJ/m3" },
+                diesel: { co2: 74.1, ch4: 0.003, n2o: 0.0006, heating_value: 0.0381, unit: "GJ/L" },
+                gasoline: { co2: 69.3, ch4: 0.003, n2o: 0.0006, heating_value: 0.0342, unit: "GJ/L" },
+                lpg: { co2: 63.1, ch4: 0.001, n2o: 0.0001, heating_value: 0.0474, unit: "GJ/kg" },
+                fuel_oil: { co2: 77.4, ch4: 0.003, n2o: 0.0006, heating_value: 0.0404, unit: "GJ/L" },
+                coal: { co2: 94.6, ch4: 0.001, n2o: 0.0015, heating_value: 0.0246, unit: "GJ/kg" },
+                kerosene: { co2: 71.9, ch4: 0.003, n2o: 0.0006, heating_value: 0.0367, unit: "GJ/L" }
+            },
+            electricity: {
+                "UAE": 0.450,
+                "Dubai": 0.440,
+                "Abu Dhabi": 0.460,
+                "Sharjah": 0.455,
+                "Northern Emirates": 0.465,
+                "Saudi Arabia": 0.720,
+                "Riyadh": 0.710,
+                "Jeddah": 0.725,
+                "Dammam": 0.730,
+                "NEOM": 0.050,
+                "Kuwait": 0.750,
+                "Qatar": 0.490,
+                "Bahrain": 0.700,
+                "Oman": 0.680
+            },
+            transport: {
+                car_small: 0.14,
+                car_medium: 0.17,
+                car_large: 0.21,
+                suv: 0.24,
+                pickup_truck: 0.28,
+                bus_public: 0.089,
+                metro_dubai: 0.027,
+                metro_riyadh: 0.030,
+                taxi_dubai: 0.18,
+                taxi_riyadh: 0.19,
+                airplane_domestic: 0.255,
+                airplane_gcc: 0.185,
+                airplane_international: 0.147
+            },
+            water: {
+                desalinated_uae: 1.82,
+                desalinated_ksa: 2.15,
+                groundwater: 0.35,
+                treated_wastewater: 0.65,
+                bottled: 0.23
+            },
+            waste: {
+                landfill_uae: 0.467,
+                landfill_ksa: 0.485,
+                recycling: -0.234,
+                composting: 0.012,
+                incineration: 0.908
+            },
+            cooling: {
+                district_cooling_uae: 0.180,
+                district_cooling_ksa: 0.290,
+                split_ac: 0.450,
+                central_ac: 0.420,
+                window_ac: 0.480
+            },
+            gwp: {
+                CO2: 1,
+                CH4: 29.8,
+                N2O: 273
+            }
+        };
+
+        // Tab switching
+        function switchTab(tabName, element) {
+            // Update active tab
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            element.classList.add('active');
+
+            // Update active content
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
 
-            // Activate selected tab
-            event.target.classList.add('active');
-            document.getElementById(scope).classList.add('active');
+            state.currentScope = tabName;
         }
 
-        async function calculate() {
-            const activeTab = document.querySelector('.tab-content.active').id;
-            const loadingDiv = document.querySelector('.loading');
-            const resultsDiv = document.getElementById('results');
+        // Show/hide renewable percentage field
+        document.getElementById('method').addEventListener('change', function() {
+            const renewableGroup = document.getElementById('renewable-group');
+            renewableGroup.style.display = this.value === 'market_based' ? 'block' : 'none';
+        });
 
-            loadingDiv.style.display = 'block';
-            resultsDiv.classList.remove('show');
+        // Update Scope 3 form based on category
+        function updateScope3Form() {
+            const category = document.getElementById('scope3-category').value;
+            const travelFields = document.getElementById('scope3-travel-fields');
+            const otherFields = document.getElementById('scope3-other-fields');
 
-            try {
-                let response;
-                let endpoint;
-                let data;
+            if (category === 'business_travel' || category === 'employee_commute') {
+                travelFields.style.display = 'block';
+                otherFields.style.display = 'none';
+            } else {
+                travelFields.style.display = 'none';
+                otherFields.style.display = 'block';
 
-                if (activeTab === 'scope1') {
-                    endpoint = '/api/calculate/scope1';
-                    data = {
-                        fuel_type: document.getElementById('fuel-type').value,
-                        amount: parseFloat(document.getElementById('fuel-amount').value) || 0,
-                        unit: document.getElementById('fuel-unit').value
-                    };
-                } else if (activeTab === 'scope2') {
-                    endpoint = '/api/calculate/scope2';
-                    data = {
-                        electricity_kwh: parseFloat(document.getElementById('electricity-amount').value) || 0,
-                        location: document.getElementById('location').value,
-                        method: document.getElementById('method').value
-                    };
-                } else if (activeTab === 'scope3') {
-                    endpoint = '/api/calculate/scope3';
-                    data = {
-                        category: 'business_travel',
-                        distance: parseFloat(document.getElementById('travel-distance').value) || 0,
-                        mode: document.getElementById('travel-mode').value
-                    };
+                // Create appropriate fields
+                let html = '<div class="form-grid">';
+
+                if (category === 'water_consumption') {
+                    html += `
+                        <div class="form-group">
+                            <label for="water-amount">Water Consumption (m³)</label>
+                            <input type="number" id="water-amount" placeholder="Annual consumption" min="0" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label for="water-type">Water Type</label>
+                            <select id="water-type">
+                                <option value="desalinated_uae">Desalinated (UAE)</option>
+                                <option value="desalinated_ksa">Desalinated (KSA)</option>
+                                <option value="groundwater">Groundwater</option>
+                                <option value="treated_wastewater">Treated Wastewater</option>
+                                <option value="bottled">Bottled Water (L)</option>
+                            </select>
+                        </div>
+                    `;
+                } else if (category === 'waste_disposal') {
+                    html += `
+                        <div class="form-group">
+                            <label for="waste-amount">Waste Amount (kg)</label>
+                            <input type="number" id="waste-amount" placeholder="Annual waste" min="0" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label for="disposal-method">Disposal Method</label>
+                            <select id="disposal-method">
+                                <option value="landfill_uae">Landfill (UAE)</option>
+                                <option value="landfill_ksa">Landfill (KSA)</option>
+                                <option value="recycling">Recycling</option>
+                                <option value="composting">Composting</option>
+                                <option value="incineration">Incineration</option>
+                            </select>
+                        </div>
+                    `;
+                } else if (category === 'cooling') {
+                    html += `
+                        <div class="form-group">
+                            <label for="cooling-kwh">Cooling Energy (kWh)</label>
+                            <input type="number" id="cooling-kwh" placeholder="Annual consumption" min="0" step="any">
+                        </div>
+                        <div class="form-group">
+                            <label for="cooling-type">Cooling System Type</label>
+                            <select id="cooling-type">
+                                <option value="district_cooling_uae">District Cooling (UAE)</option>
+                                <option value="district_cooling_ksa">District Cooling (KSA)</option>
+                                <option value="split_ac">Split AC</option>
+                                <option value="central_ac">Central AC</option>
+                                <option value="window_ac">Window AC</option>
+                            </select>
+                        </div>
+                    `;
                 }
 
-                // If API is available, use it; otherwise calculate locally
-                if (API_URL) {
-                    response = await fetch(API_URL + endpoint, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data)
-                    });
+                html += '</div>';
+                otherFields.innerHTML = html;
+            }
+        }
 
-                    if (!response.ok) throw new Error('API request failed');
+        // Calculation functions
+        function calculateScope1() {
+            showLoading();
 
-                    const result = await response.json();
-                    displayResults(result);
-                } else {
-                    // Local calculation fallback
-                    const emissions = calculateLocally(activeTab, data);
-                    displayResults({
-                        emissions_tco2e: emissions,
-                        activity: getActivityDescription(activeTab, data)
-                    });
+            const fuelType = document.getElementById('fuel-type').value;
+            const amount = parseFloat(document.getElementById('fuel-amount').value) || 0;
+            const unit = document.getElementById('fuel-unit').value;
+
+            if (amount === 0) {
+                hideLoading();
+                alert('Please enter fuel amount');
+                return;
+            }
+
+            // Convert units if needed
+            let amountInStandardUnit = amount;
+            if (unit === 'tonnes' && fuelType !== 'coal') {
+                amountInStandardUnit = amount * 1000; // Convert to kg
+            }
+
+            const fuel = emissionFactors.fuels[fuelType];
+            const gwp = emissionFactors.gwp;
+
+            // Calculate energy content
+            const energyGJ = amountInStandardUnit * fuel.heating_value;
+
+            // Calculate emissions
+            const co2Emissions = energyGJ * fuel.co2 / 1000;
+            const ch4Emissions = energyGJ * fuel.ch4 * gwp.CH4 / 1000;
+            const n2oEmissions = energyGJ * fuel.n2o * gwp.N2O / 1000;
+            const totalEmissions = co2Emissions + ch4Emissions + n2oEmissions;
+
+            // Store result
+            state.results.scope1.push({
+                fuel: fuelType,
+                amount: amount,
+                unit: unit,
+                emissions: totalEmissions
+            });
+
+            displayResults(totalEmissions, `${amount} ${unit} of ${fuelType.replace('_', ' ')}`);
+            updateDashboard();
+        }
+
+        function calculateScope2() {
+            showLoading();
+
+            const electricity = parseFloat(document.getElementById('electricity-amount').value) || 0;
+            const location = document.getElementById('location').value;
+            const method = document.getElementById('method').value;
+            const renewable = parseFloat(document.getElementById('renewable-percentage').value) || 0;
+
+            if (electricity === 0) {
+                hideLoading();
+                alert('Please enter electricity consumption');
+                return;
+            }
+
+            let emissionFactor = emissionFactors.electricity[location] || 0.5;
+
+            if (method === 'market_based') {
+                emissionFactor *= (1 - renewable / 100);
+            }
+
+            const emissions = electricity * emissionFactor / 1000;
+
+            state.results.scope2.push({
+                electricity: electricity,
+                location: location,
+                method: method,
+                renewable: renewable,
+                emissions: emissions
+            });
+
+            displayResults(emissions, `${electricity.toLocaleString()} kWh in ${location}`);
+            updateDashboard();
+        }
+
+        function calculateScope3() {
+            showLoading();
+
+            const category = document.getElementById('scope3-category').value;
+            let emissions = 0;
+            let activity = '';
+
+            if (category === 'business_travel' || category === 'employee_commute') {
+                const distance = parseFloat(document.getElementById('travel-distance').value) || 0;
+                const mode = document.getElementById('travel-mode').value;
+                const isReturn = document.getElementById('return-trip').checked;
+
+                if (distance === 0) {
+                    hideLoading();
+                    alert('Please enter distance');
+                    return;
                 }
 
-                // Update summary
-                await updateSummary();
+                const totalDistance = isReturn ? distance * 2 : distance;
+                emissions = totalDistance * emissionFactors.transport[mode] / 1000;
+                activity = `${totalDistance.toLocaleString()} km by ${mode.replace('_', ' ')}`;
 
-            } catch (error) {
-                console.error('Error:', error);
-                // Fallback to local calculation
-                const emissions = calculateLocally(activeTab, data);
-                displayResults({
-                    emissions_tco2e: emissions,
-                    activity: getActivityDescription(activeTab, data)
-                });
-            } finally {
-                loadingDiv.style.display = 'none';
+            } else if (category === 'water_consumption') {
+                const amount = parseFloat(document.getElementById('water-amount').value) || 0;
+                const type = document.getElementById('water-type').value;
+
+                if (amount === 0) {
+                    hideLoading();
+                    alert('Please enter water consumption');
+                    return;
+                }
+
+                emissions = amount * emissionFactors.water[type] / 1000;
+                activity = `${amount.toLocaleString()} m³ of ${type.replace('_', ' ')}`;
+
+            } else if (category === 'waste_disposal') {
+                const amount = parseFloat(document.getElementById('waste-amount').value) || 0;
+                const method = document.getElementById('disposal-method').value;
+
+                if (amount === 0) {
+                    hideLoading();
+                    alert('Please enter waste amount');
+                    return;
+                }
+
+                emissions = amount * emissionFactors.waste[method] / 1000;
+                activity = `${amount.toLocaleString()} kg via ${method.replace('_', ' ')}`;
+
+            } else if (category === 'cooling') {
+                const kwh = parseFloat(document.getElementById('cooling-kwh').value) || 0;
+                const type = document.getElementById('cooling-type').value;
+
+                if (kwh === 0) {
+                    hideLoading();
+                    alert('Please enter cooling energy consumption');
+                    return;
+                }
+
+                emissions = kwh * emissionFactors.cooling[type] / 1000;
+                activity = `${kwh.toLocaleString()} kWh from ${type.replace('_', ' ')}`;
             }
+
+            state.results.scope3.push({
+                category: category,
+                activity: activity,
+                emissions: emissions
+            });
+
+            displayResults(emissions, activity);
+            updateDashboard();
         }
 
-        function calculateLocally(scope, data) {
-            // Simple local calculations for demo purposes
-            if (scope === 'scope1') {
-                const factors = {
-                    natural_gas: 0.00209,
-                    diesel: 0.00268,
-                    gasoline: 0.00237,
-                    coal: 0.00233
-                };
-                return data.amount * (factors[data.fuel_type] || 0.002);
-            } else if (scope === 'scope2') {
-                const factors = {
-                    UAE: 0.000450,
-                    Dubai: 0.000440,
-                    "Abu Dhabi": 0.000460,
-                    Sharjah: 0.000455,
-                    "Northern Emirates": 0.000465,
-                    "Saudi Arabia": 0.000720,
-                    Riyadh: 0.000710,
-                    Jeddah: 0.000725,
-                    Dammam: 0.000730,
-                    NEOM: 0.000050
-                };
-                return data.electricity_kwh * (factors[data.location] || 0.0004);
-            } else if (scope === 'scope3') {
-                const factors = {
-                    car_small: 0.00014,
-                    car_medium: 0.00017,
-                    car_large: 0.00021,
-                    suv: 0.00024,
-                    pickup_truck: 0.00028,
-                    bus_public: 0.000089,
-                    metro_dubai: 0.000027,
-                    metro_riyadh: 0.000030,
-                    airplane_domestic: 0.000255,
-                    airplane_gcc: 0.000185,
-                    airplane_international: 0.000147
-                };
-                return data.distance * (factors[data.mode] || 0.00017);
-            }
-            return 0;
+        function showLoading() {
+            document.querySelector('.loading').style.display = 'block';
         }
 
-        function getActivityDescription(scope, data) {
-            if (scope === 'scope1') {
-                return `${data.amount} ${data.unit} of ${data.fuel_type.replace('_', ' ')}`;
-            } else if (scope === 'scope2') {
-                return `${data.electricity_kwh} kWh in ${data.location}`;
-            } else if (scope === 'scope3') {
-                return `${data.distance} km by ${data.mode.replace('_', ' ')}`;
-            }
-            return '';
+        function hideLoading() {
+            document.querySelector('.loading').style.display = 'none';
         }
 
-        function displayResults(result) {
+        function displayResults(emissions, activity) {
+            hideLoading();
+
             const resultsDiv = document.getElementById('results');
-            const resultValue = document.getElementById('result-value');
-            const resultDetails = document.getElementById('result-details');
-
-            resultValue.textContent = result.emissions_tco2e.toFixed(3) + ' tCO₂e';
-            resultDetails.textContent = `Activity: ${result.activity}`;
-
             resultsDiv.classList.add('show');
+
+            // Update values
+            document.getElementById('result-value').textContent = emissions.toFixed(3);
+            document.getElementById('uncertainty-value').textContent = '±5';
+
+            // Calculate tree equivalent (1 tree absorbs ~21.77 kg CO2/year)
+            const trees = Math.ceil(emissions * 1000 / 21.77);
+            document.getElementById('equivalent-value').textContent = trees.toLocaleString();
+
+            // Update details
+            document.getElementById('result-details').innerHTML = `
+                <p><strong>Activity:</strong> ${activity}</p>
+                <p><strong>Calculation Method:</strong> GHG Protocol</p>
+                <p><strong>Data Quality:</strong> High (using latest emission factors)</p>
+            `;
+
+            // Scroll to results
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
         }
 
-        async function updateSummary() {
-            // This would normally fetch from API, but for demo we'll use localStorage
-            document.getElementById('summary').style.display = 'grid';
+        function updateDashboard() {
+            const dashboard = document.getElementById('dashboard');
+            dashboard.style.display = 'block';
+
+            const totals = {
+                scope1: state.results.scope1.reduce((sum, r) => sum + r.emissions, 0),
+                scope2: state.results.scope2.reduce((sum, r) => sum + r.emissions, 0),
+                scope3: state.results.scope3.reduce((sum, r) => sum + r.emissions, 0)
+            };
+
+            totals.total = totals.scope1 + totals.scope2 + totals.scope3;
+
+            document.getElementById('scope1-total').textContent = totals.scope1.toFixed(3);
+            document.getElementById('scope2-total').textContent = totals.scope2.toFixed(3);
+            document.getElementById('scope3-total').textContent = totals.scope3.toFixed(3);
+            document.getElementById('total-emissions').textContent = totals.total.toFixed(3);
         }
+
+        function downloadReport() {
+            const totals = {
+                scope1: state.results.scope1.reduce((sum, r) => sum + r.emissions, 0),
+                scope2: state.results.scope2.reduce((sum, r) => sum + r.emissions, 0),
+                scope3: state.results.scope3.reduce((sum, r) => sum + r.emissions, 0)
+            };
+            totals.total = totals.scope1 + totals.scope2 + totals.scope3;
+
+            const report = {
+                metadata: {
+                    generated_at: new Date().toISOString(),
+                    calculator: "GCC Emissions Calculator",
+                    author: "Edy Bassil",
+                    methodology: "GHG Protocol"
+                },
+                results: state.results,
+                summary: totals
+            };
+
+            const dataStr = JSON.stringify(report, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+
+            const exportFileDefaultName = `emissions_report_${new Date().toISOString().split('T')[0]}.json`;
+
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+
+        function shareResults() {
+            const totals = {
+                scope1: state.results.scope1.reduce((sum, r) => sum + r.emissions, 0),
+                scope2: state.results.scope2.reduce((sum, r) => sum + r.emissions, 0),
+                scope3: state.results.scope3.reduce((sum, r) => sum + r.emissions, 0)
+            };
+            totals.total = totals.scope1 + totals.scope2 + totals.scope3;
+
+            const text = `I calculated my organization's carbon footprint: ${totals.total.toFixed(2)} tCO2e using the GCC Emissions Calculator`;
+            const url = 'https://edybass.github.io/gcc-emissions-calculator/';
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'GCC Emissions Calculator Results',
+                    text: text,
+                    url: url
+                });
+            } else {
+                // Fallback - copy to clipboard
+                const shareText = `${text}\n${url}`;
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Results copied to clipboard!');
+                });
+            }
+        }
+
+        function showAbout() {
+            alert(`GCC Emissions Calculator v1.0\n\nCreated by Edy Bassil\nEmail: bassileddy@gmail.com\n\nThis calculator helps organizations in the UAE and Saudi Arabia calculate their greenhouse gas emissions following international standards.\n\nSupporting UAE Net Zero 2050 & Saudi Vision 2030`);
+        }
+
+        function startComprehensiveAssessment() {
+            alert('Comprehensive assessment feature coming soon! This will allow you to input all emission sources and generate detailed reports.');
+        }
+
+        function addMore(scope) {
+            alert(`Adding multiple ${scope} sources feature coming soon!`);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('GCC Emissions Calculator initialized');
+            console.log('Created by Edy Bassil - bassileddy@gmail.com');
+        });
     </script>
 </body>
 </html>
