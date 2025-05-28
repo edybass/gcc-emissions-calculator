@@ -1,0 +1,152 @@
+{
+  "fuels": {
+    "natural_gas": {
+      "co2": 56.1,
+      "ch4": 0.001,
+      "n2o": 0.0001,
+      "heating_value": 0.0373,
+      "unit": "GJ/m3",
+      "source": "IPCC 2006"
+    },
+    "diesel": {
+      "co2": 74.1,
+      "ch4": 0.003,
+      "n2o": 0.0006,
+      "heating_value": 0.0381,
+      "unit": "GJ/L",
+      "source": "IPCC 2006"
+    },
+    "gasoline": {
+      "co2": 69.3,
+      "ch4": 0.003,
+      "n2o": 0.0006,
+      "heating_value": 0.0342,
+      "unit": "GJ/L",
+      "source": "IPCC 2006"
+    },
+    "lpg": {
+      "co2": 63.1,
+      "ch4": 0.001,
+      "n2o": 0.0001,
+      "heating_value": 0.0474,
+      "unit": "GJ/kg",
+      "source": "IPCC 2006"
+    },
+    "fuel_oil": {
+      "co2": 77.4,
+      "ch4": 0.003,
+      "n2o": 0.0006,
+      "heating_value": 0.0404,
+      "unit": "GJ/L",
+      "source": "IPCC 2006"
+    }
+  },
+  "electricity": {
+    "UAE": {
+      "factor": 0.45,
+      "unit": "kg CO2e/kWh",
+      "source": "IEA 2023, UAE Ministry of Energy",
+      "year": 2023
+    },
+    "Dubai": {
+      "factor": 0.44,
+      "unit": "kg CO2e/kWh",
+      "source": "DEWA Sustainability Report 2023",
+      "year": 2023
+    },
+    "Abu Dhabi": {
+      "factor": 0.46,
+      "unit": "kg CO2e/kWh",
+      "source": "ADWEA 2023",
+      "year": 2023
+    },
+    "Sharjah": {
+      "factor": 0.455,
+      "unit": "kg CO2e/kWh",
+      "source": "SEWA 2023",
+      "year": 2023
+    },
+    "Northern Emirates": {
+      "factor": 0.465,
+      "unit": "kg CO2e/kWh",
+      "source": "FEWA 2023",
+      "year": 2023
+    },
+    "Saudi Arabia": {
+      "factor": 0.72,
+      "unit": "kg CO2e/kWh",
+      "source": "Saudi Electricity Company 2023",
+      "year": 2023
+    },
+    "Riyadh": {
+      "factor": 0.71,
+      "unit": "kg CO2e/kWh",
+      "source": "SEC Central Region 2023",
+      "year": 2023
+    },
+    "Jeddah": {
+      "factor": 0.725,
+      "unit": "kg CO2e/kWh",
+      "source": "SEC Western Region 2023",
+      "year": 2023
+    },
+    "Dammam": {
+      "factor": 0.73,
+      "unit": "kg CO2e/kWh",
+      "source": "SEC Eastern Region 2023",
+      "year": 2023
+    },
+    "NEOM": {
+      "factor": 0.05,
+      "unit": "kg CO2e/kWh",
+      "source": "NEOM Energy 2023",
+      "year": 2023
+    }
+  },
+  "transport": {
+    "car_small": 0.14,
+    "car_medium": 0.17,
+    "car_large": 0.21,
+    "suv": 0.24,
+    "pickup_truck": 0.28,
+    "bus_public": 0.089,
+    "metro_dubai": 0.027,
+    "metro_riyadh": 0.03,
+    "taxi_dubai": 0.18,
+    "taxi_riyadh": 0.19,
+    "airplane_domestic": 0.255,
+    "airplane_gcc": 0.185,
+    "airplane_international": 0.147
+  },
+  "cooling": {
+    "district_cooling_uae": 0.18,
+    "district_cooling_ksa": 0.29,
+    "split_ac": 0.45,
+    "central_ac": 0.42,
+    "window_ac": 0.48
+  },
+  "water": {
+    "desalinated_water_uae": 1.82,
+    "desalinated_water_ksa": 2.15,
+    "groundwater": 0.35,
+    "treated_wastewater": 0.65,
+    "bottled_water": 0.23
+  },
+  "waste": {
+    "landfill_uae": 0.467,
+    "landfill_ksa": 0.485,
+    "recycling": -0.234,
+    "composting": 0.012,
+    "incineration": 0.908
+  },
+  "gwp": {
+    "CO2": 1,
+    "CH4": 29.8,
+    "N2O": 273,
+    "R410A": 2088,
+    "R404A": 3922,
+    "R134a": 1430,
+    "R32": 675,
+    "SF6": 25200
+  }
+}

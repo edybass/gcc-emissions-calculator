@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GHG Emissions Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+
+        .calculator-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            margin-top: 40px;
+        }
+
+        .scope-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: #7f8c8d;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab.active {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #3498db;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: block;
+            margin: 30px auto 0;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .results {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #27ae60;
+        }
+
+        .summary {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-card h3 {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .summary-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #7f8c8d;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .calculator-container {
+                padding: 20px;
+            }
+
+            .scope-tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌍 UAE & KSA GHG Emissions Calculator</h1>
+            <p class="subtitle">Calculate your carbon footprint in the UAE and Saudi Arabia</p>
+            <p class="subtitle" style="font-size: 1rem; margin-top: 10px;">Supporting UAE Net Zero 2050 & Saudi Vision 2030</p>
+        </header>
+
+        <div class="calculator-container">
+            <div class="scope-tabs">
+                <button class="tab active" onclick="switchTab('scope1')">Scope 1</button>
+                <button class="tab" onclick="switchTab('scope2')">Scope 2</button>
+                <button class="tab" onclick="switchTab('scope3')">Scope 3</button>
+            </div>
+
+            <div id="scope1" class="tab-content active">
+                <h2>Direct Emissions</h2>
+                <p style="color: #7f8c8d; margin-bottom: 30px;">Calculate emissions from fuel combustion and direct sources</p>
+
+                <div class="form-group">
+                    <label for="fuel-type">Fuel Type</label>
+                    <select id="fuel-type">
+                        <option value="natural_gas">Natural Gas</option>
+                        <option value="diesel">Diesel</option>
+                        <option value="gasoline">Gasoline</option>
+                        <option value="coal">Coal</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="fuel-amount">Amount</label>
+                    <input type="number" id="fuel-amount" placeholder="Enter amount" min="0" step="any">
+                </div>
+
+                <div class="form-group">
+                    <label for="fuel-unit">Unit</label>
+                    <select id="fuel-unit">
+                        <option value="m3">Cubic meters (m³)</option>
+                        <option value="L">Liters (L)</option>
+                        <option value="kg">Kilograms (kg)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="scope2" class="tab-content">
+                <h2>Energy Indirect Emissions</h2>
+                <p style="color: #7f8c8d; margin-bottom: 30px;">Calculate emissions from purchased electricity</p>
+
+                <div class="form-group">
+                    <label for="electricity-amount">Electricity Consumption (kWh)</label>
+                    <input type="number" id="electricity-amount" placeholder="Enter kWh" min="0" step="any">
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <select id="location">
+                        <optgroup label="United Arab Emirates">
+                            <option value="UAE">UAE (National Average)</option>
+                            <option value="Dubai">Dubai (DEWA)</option>
+                            <option value="Abu Dhabi">Abu Dhabi (ADWEA)</option>
+                            <option value="Sharjah">Sharjah (SEWA)</option>
+                            <option value="Northern Emirates">Northern Emirates (FEWA)</option>
+                        </optgroup>
+                        <optgroup label="Saudi Arabia">
+                            <option value="Saudi Arabia">KSA (National Average)</option>
+                            <option value="Riyadh">Riyadh (Central)</option>
+                            <option value="Jeddah">Jeddah (Western)</option>
+                            <option value="Dammam">Dammam (Eastern)</option>
+                            <option value="NEOM">NEOM (Renewable)</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="method">Calculation Method</label>
+                    <select id="method">
+                        <option value="location_based">Location-based</option>
+                        <option value="market_based">Market-based</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="scope3" class="tab-content">
+                <h2>Value Chain Emissions</h2>
+                <p style="color: #7f8c8d; margin-bottom: 30px;">Calculate emissions from business travel and other indirect sources</p>
+
+                <div class="form-group">
+                    <label for="travel-distance">Travel Distance (km)</label>
+                    <input type="number" id="travel-distance" placeholder="Enter distance in km" min="0" step="any">
+                </div>
+
+                <div class="form-group">
+                    <label for="travel-mode">Mode of Transport</label>
+                    <select id="travel-mode">
+                        <option value="car_small">Car (Small)</option>
+                        <option value="car_medium">Car (Medium)</option>
+                        <option value="car_large">Car (Large)</option>
+                        <option value="suv">SUV</option>
+                        <option value="pickup_truck">Pickup Truck</option>
+                        <option value="bus_public">Public Bus</option>
+                        <option value="metro_dubai">Dubai Metro</option>
+                        <option value="metro_riyadh">Riyadh Metro</option>
+                        <option value="airplane_domestic">Airplane (Domestic)</option>
+                        <option value="airplane_gcc">Airplane (Within GCC)</option>
+                        <option value="airplane_international">Airplane (International)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="calculate-btn" onclick="calculate()">Calculate Emissions</button>
+
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Calculating...</p>
+            </div>
+
+            <div id="results" class="results">
+                <h3>Calculation Results</h3>
+                <div class="result-item">
+                    <span>CO₂ Emissions:</span>
+                    <span class="result-value" id="result-value">0.000 tCO₂e</span>
+                </div>
+                <div style="margin-top: 20px; padding: 20px; background: #e8f5e9; border-radius: 10px;">
+                    <p id="result-details" style="color: #2e7d32;"></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="summary" class="summary" style="display: none;">
+            <div class="summary-card">
+                <h3>Scope 1</h3>
+                <div class="value" id="scope1-total">0.000</div>
+                <p>tCO₂e</p>
+            </div>
+            <div class="summary-card">
+                <h3>Scope 2</h3>
+                <div class="value" id="scope2-total">0.000</div>
+                <p>tCO₂e</p>
+            </div>
+            <div class="summary-card">
+                <h3>Scope 3</h3>
+                <div class="value" id="scope3-total">0.000</div>
+                <p>tCO₂e</p>
+            </div>
+            <div class="summary-card">
+                <h3>Total</h3>
+                <div class="value" id="total-emissions">0.000</div>
+                <p>tCO₂e</p>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>Built with ❤️ for a sustainable future | <a href="https://github.com/yourusername/ghg-emissions-calculator" style="color: #3498db;">View on GitHub</a></p>
+        </footer>
+    </div>
+
+    <script>
+        const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:8000' : '';
+
+        function switchTab(scope) {
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            // Activate selected tab
+            event.target.classList.add('active');
+            document.getElementById(scope).classList.add('active');
+        }
+
+        async function calculate() {
+            const activeTab = document.querySelector('.tab-content.active').id;
+            const loadingDiv = document.querySelector('.loading');
+            const resultsDiv = document.getElementById('results');
+
+            loadingDiv.style.display = 'block';
+            resultsDiv.classList.remove('show');
+
+            try {
+                let response;
+                let endpoint;
+                let data;
+
+                if (activeTab === 'scope1') {
+                    endpoint = '/api/calculate/scope1';
+                    data = {
+                        fuel_type: document.getElementById('fuel-type').value,
+                        amount: parseFloat(document.getElementById('fuel-amount').value) || 0,
+                        unit: document.getElementById('fuel-unit').value
+                    };
+                } else if (activeTab === 'scope2') {
+                    endpoint = '/api/calculate/scope2';
+                    data = {
+                        electricity_kwh: parseFloat(document.getElementById('electricity-amount').value) || 0,
+                        location: document.getElementById('location').value,
+                        method: document.getElementById('method').value
+                    };
+                } else if (activeTab === 'scope3') {
+                    endpoint = '/api/calculate/scope3';
+                    data = {
+                        category: 'business_travel',
+                        distance: parseFloat(document.getElementById('travel-distance').value) || 0,
+                        mode: document.getElementById('travel-mode').value
+                    };
+                }
+
+                // If API is available, use it; otherwise calculate locally
+                if (API_URL) {
+                    response = await fetch(API_URL + endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (!response.ok) throw new Error('API request failed');
+
+                    const result = await response.json();
+                    displayResults(result);
+                } else {
+                    // Local calculation fallback
+                    const emissions = calculateLocally(activeTab, data);
+                    displayResults({
+                        emissions_tco2e: emissions,
+                        activity: getActivityDescription(activeTab, data)
+                    });
+                }
+
+                // Update summary
+                await updateSummary();
+
+            } catch (error) {
+                console.error('Error:', error);
+                // Fallback to local calculation
+                const emissions = calculateLocally(activeTab, data);
+                displayResults({
+                    emissions_tco2e: emissions,
+                    activity: getActivityDescription(activeTab, data)
+                });
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+
+        function calculateLocally(scope, data) {
+            // Simple local calculations for demo purposes
+            if (scope === 'scope1') {
+                const factors = {
+                    natural_gas: 0.00209,
+                    diesel: 0.00268,
+                    gasoline: 0.00237,
+                    coal: 0.00233
+                };
+                return data.amount * (factors[data.fuel_type] || 0.002);
+            } else if (scope === 'scope2') {
+                const factors = {
+                    UAE: 0.000450,
+                    Dubai: 0.000440,
+                    "Abu Dhabi": 0.000460,
+                    Sharjah: 0.000455,
+                    "Northern Emirates": 0.000465,
+                    "Saudi Arabia": 0.000720,
+                    Riyadh: 0.000710,
+                    Jeddah: 0.000725,
+                    Dammam: 0.000730,
+                    NEOM: 0.000050
+                };
+                return data.electricity_kwh * (factors[data.location] || 0.0004);
+            } else if (scope === 'scope3') {
+                const factors = {
+                    car_small: 0.00014,
+                    car_medium: 0.00017,
+                    car_large: 0.00021,
+                    suv: 0.00024,
+                    pickup_truck: 0.00028,
+                    bus_public: 0.000089,
+                    metro_dubai: 0.000027,
+                    metro_riyadh: 0.000030,
+                    airplane_domestic: 0.000255,
+                    airplane_gcc: 0.000185,
+                    airplane_international: 0.000147
+                };
+                return data.distance * (factors[data.mode] || 0.00017);
+            }
+            return 0;
+        }
+
+        function getActivityDescription(scope, data) {
+            if (scope === 'scope1') {
+                return `${data.amount} ${data.unit} of ${data.fuel_type.replace('_', ' ')}`;
+            } else if (scope === 'scope2') {
+                return `${data.electricity_kwh} kWh in ${data.location}`;
+            } else if (scope === 'scope3') {
+                return `${data.distance} km by ${data.mode.replace('_', ' ')}`;
+            }
+            return '';
+        }
+
+        function displayResults(result) {
+            const resultsDiv = document.getElementById('results');
+            const resultValue = document.getElementById('result-value');
+            const resultDetails = document.getElementById('result-details');
+
+            resultValue.textContent = result.emissions_tco2e.toFixed(3) + ' tCO₂e';
+            resultDetails.textContent = `Activity: ${result.activity}`;
+
+            resultsDiv.classList.add('show');
+        }
+
+        async function updateSummary() {
+            // This would normally fetch from API, but for demo we'll use localStorage
+            document.getElementById('summary').style.display = 'grid';
+        }
+    </script>
+</body>
+</html>
